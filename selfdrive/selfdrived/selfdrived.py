@@ -95,6 +95,7 @@ class SelfdriveD:
     # read params
     self.is_metric = self.params.get_bool("IsMetric")
     self.is_ldw_enabled = self.params.get_bool("IsLdwEnabled")
+    self.lead_departure_alert_enabled = self.params.get_bool("dp_lead_departure_alert")
     self.disengage_on_accelerator = self.params.get_bool("DisengageOnAccelerator")
 
     car_recognized = self.CP.brand != 'mock'
@@ -239,6 +240,14 @@ class SelfdriveD:
     if self.is_ldw_enabled and self.sm.valid['driverAssistance']:
       if self.sm['driverAssistance'].leftLaneDeparture or self.sm['driverAssistance'].rightLaneDeparture:
         self.events.add(EventName.ldw)
+
+    # Lead departure alert
+    lead_model_x = self.sm['modelV2'].position.x
+    if (self.lead_departure_alert_enabled and CS.standstill and not CS.gasPressed and
+        self.sm.valid['radarState'] and self.sm.valid['modelV2'] and
+        self.sm['radarState'].leadOne.status and self.sm['radarState'].leadOne.vRel > 1.0 and
+        len(lead_model_x) > 0 and lead_model_x[-1] > 30.0):
+      self.events.add(EventName.leadDeparting)
 
     # ******************************************************************************************
     #  NOTE: To fork maintainers.
@@ -515,6 +524,7 @@ class SelfdriveD:
     while not evt.is_set():
       self.is_metric = self.params.get_bool("IsMetric")
       self.is_ldw_enabled = self.params.get_bool("IsLdwEnabled")
+      self.lead_departure_alert_enabled = self.params.get_bool("dp_lead_departure_alert")
       self.disengage_on_accelerator = self.params.get_bool("DisengageOnAccelerator")
       self.experimental_mode = self.params.get_bool("ExperimentalMode") and self.CP.openpilotLongitudinalControl
       self.personality = self.params.get("LongitudinalPersonality", return_default=True)

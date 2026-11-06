@@ -502,6 +502,14 @@ EVENTS: dict[int, dict[str, Alert | AlertCallbackType]] = {
       Priority.LOW, VisualAlert.ldw, AudibleAlert.prompt, 3.),
   },
 
+  EventName.leadDeparting: {
+    ET.PERMANENT: Alert(
+      "LEAD VEHICLE DEPARTING",
+      "",
+      AlertStatus.userPrompt, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.prompt, 2.),
+  },
+
   # ********** events only containing alerts that display while engaged **********
 
   EventName.steerTempUnavailableSilent: {

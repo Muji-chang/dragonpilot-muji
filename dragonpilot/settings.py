@@ -232,6 +232,12 @@ SETTINGS = [
         "condition": "not LITE"
       },
       {
+        "key": "dp_lead_departure_alert",
+        "type": "toggle_item",
+        "title": "Lead Departure Alert",
+        "description": "Play a chime and show an alert when the vehicle ahead starts moving while you are stopped."
+      },
+      {
         "key": "dp_dev_auto_shutdown_in",
         "type": "spin_button_item",
         "title": "Auto Shutdown After",
